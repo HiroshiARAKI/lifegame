@@ -5,6 +5,8 @@
 You can simulate Conway's Game of Life simply on Python!!  
 
 ## What is Conway's Game of Life?
+
+My article: [GUIのライフゲームを作ってみた【Python】| HIRO LAB BLOG](https://hirlab.net/nblog/category/programming/art_616/)
   
 (en) [Conway's Game of Life - Wikipedia](https://en.wikipedia.org/wiki/Conway%27s_Game_of_Life)  
 (jp) [ライフゲーム - Wikipedia](https://ja.wikipedia.org/wiki/ライフゲーム)  
