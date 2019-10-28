@@ -30,7 +30,7 @@ class LifeGame(Cells):
         for y, line in enumerate(self.cells):
             for x, cell in enumerate(line):
                 next_states[x][y] = self.get_next_state(self.count_alive_cells(x, y),
-                                                        self.is_alive(x, y)
+                                                        self.cells[x][y]
                                                         )
         self.step_next_generation(next_states)
 

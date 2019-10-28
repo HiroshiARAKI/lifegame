@@ -1,6 +1,6 @@
 # LifeGame on Python
 
-![version](https://img.shields.io/badge/version-0.1.0-lightgray.svg?style=flat) 
+![version](https://img.shields.io/badge/version-0.2.0-lightgray.svg?style=flat) 
    
 You can simulate Conway's Game of Life simply on Python!!  
 
@@ -23,10 +23,14 @@ if __name__ == '__main__':
     # Create Conway's Game of Life GUI Frame
     game = GUILifeGame(f_shape=(50, 50), time_step=100)
 
+    # Put Galaxy on center
+    game.set_object('galaxy')
+
     # Start!!
-    game.run(init_rand=True, rate=0.2)
+    game.run()
+
 ```
-![example-1](examples/img1.png)
+![example-1](examples/img2.png)
 
 ## LICENSE
 [MIT LICENSE](LICENSE.txt)  

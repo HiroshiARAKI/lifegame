@@ -1,5 +1,7 @@
 import wx
 import numpy as np
+import os
+from datetime import datetime
 from .lifegame import LifeGame
 
 
@@ -12,7 +14,7 @@ class LGFrame(wx.Frame):
     STOP = 2
     CLEAR = 3
 
-    def __init__(self, f_shape, w_size: int = 500, time_step: int = 1000) -> None:
+    def __init__(self, f_shape, w_size: int = 600, time_step: int = 1000) -> None:
         # initialize Conway's Game of Life Frame
         self.game = LifeGame(f_shape=f_shape)
 
@@ -43,18 +45,21 @@ class LGFrame(wx.Frame):
         self.btn3 = wx.Button(self.panel, wx.ID_ANY, label='Stop')
         self.btn4 = wx.Button(self.panel, wx.ID_ANY, label='Clear')
         self.btn5 = wx.Button(self.panel, wx.ID_ANY, label='Random')
+        self.btn6 = wx.Button(self.panel, wx.ID_ANY, label='Save')
 
         self.btn1.SetBackgroundColour('blue')
         self.btn2.SetBackgroundColour('blue')
         self.btn3.SetBackgroundColour('blue')
         self.btn4.SetBackgroundColour('blue')
         self.btn5.SetBackgroundColour('blue')
+        self.btn6.SetBackgroundColour('blue')
 
         self.btn1.Bind(wx.EVT_BUTTON, self.run)
         self.btn2.Bind(wx.EVT_BUTTON, self.step)
         self.btn3.Bind(wx.EVT_BUTTON, self.stop)
         self.btn4.Bind(wx.EVT_BUTTON, self.clear)
         self.btn5.Bind(wx.EVT_BUTTON, self.init_rand)
+        self.btn6.Bind(wx.EVT_BUTTON, self.save)
 
         self.btn3.Disable()
 
@@ -64,6 +69,7 @@ class LGFrame(wx.Frame):
         sizer.Add(self.btn3, 1)
         sizer.Add(self.btn4, 1)
         sizer.Add(self.btn5, 1)
+        sizer.Add(self.btn6, 1)
 
         self.panel.Bind(wx.EVT_PAINT, self.draw)
         self.Center()
@@ -79,14 +85,12 @@ class LGFrame(wx.Frame):
         s = self.cell_size
         dc = wx.PaintDC(self.panel)
         dc.Clear()
+        dc.SetPen(wx.Pen('gray'))
         for i, x in enumerate(np.arange(0, self.x_max, s)):
             for j, y in enumerate(np.arange(25, self.y_max, s)):
-                if self.game.cells[i][j] == 0:
-                    dc.SetPen(wx.Pen('gray'))
-                    dc.SetBrush(wx.Brush('white'))
-                else:
-                    dc.SetPen(wx.Pen('gray'))
-                    dc.SetBrush(wx.Brush('black'))
+                color = 'white' if self.game.cells[i][j] == 0 else 'black'
+
+                dc.SetBrush(wx.Brush(color))
 
                 dc.DrawRectangle(x, y, s, s)
 
@@ -96,6 +100,7 @@ class LGFrame(wx.Frame):
         self.btn3.Enable()
         self.btn4.Disable()
         self.btn5.Disable()
+        self.btn6.Disable()
 
         self.timer.Start(self.dt)
         self.game.update()
@@ -110,6 +115,7 @@ class LGFrame(wx.Frame):
         self.btn3.Disable()
         self.btn4.Enable()
         self.btn5.Enable()
+        self.btn6.Enable()
 
         self.game.update()
         self.gen += 1
@@ -123,6 +129,7 @@ class LGFrame(wx.Frame):
         self.btn3.Disable()
         self.btn4.Enable()
         self.btn5.Enable()
+        self.btn6.Enable()
 
         self.timer.Stop()
 
@@ -132,6 +139,7 @@ class LGFrame(wx.Frame):
         self.btn3.Disable()
         self.btn4.Enable()
         self.btn5.Enable()
+        self.btn6.Enable()
 
         self.game.clear()
         self.gen = 0
@@ -139,7 +147,7 @@ class LGFrame(wx.Frame):
                            % (self.f_shape[0], self.f_shape[1], self.gen, np.count_nonzero(self.game.cells)))
         self.Refresh()
 
-    def init_rand(self, event, rate: float):
+    def init_rand(self, event, rate: float = 0.2):
         self.btn1.Enable()
         self.btn2.Enable()
         self.btn3.Disable()
@@ -150,6 +158,22 @@ class LGFrame(wx.Frame):
         self.gen = 0
         self.SetStatusText('Size = (%d, %d): Generation = %d,   Alive cells = %d'
                            % (self.f_shape[0], self.f_shape[1], self.gen, np.count_nonzero(self.game.cells)))
+        self.Refresh()
+
+    def save(self, event):
+        self.btn1.Enable()
+        self.btn2.Enable()
+        self.btn3.Disable()
+        self.btn4.Enable()
+        self.btn5.Enable()
+        self.btn6.Enable()
+
+        os.makedirs('save/', exist_ok=True)
+        file_name = 'save/data_%s.txt' % (datetime.now().strftime('%Y%m%d_%H-%M%-S'))
+        np.savetxt(file_name, self.game.cells.T, fmt='%d',  delimiter=',')
+        self.SetStatusText('Size = (%d, %d): Generation = %d,   Alive cells = %d,   Saved as "%s" !'
+                           % (self.f_shape[0], self.f_shape[1], self.gen, np.count_nonzero(self.game.cells),
+                              file_name))
         self.Refresh()
 
     def click(self, event):
@@ -163,3 +187,6 @@ class LGFrame(wx.Frame):
                            % (self.f_shape[0], self.f_shape[1], self.gen, np.count_nonzero(self.game.cells)))
 
         self.Refresh()
+
+    def set_object(self, obj, x: int = 0, y: int = 0):
+        self.game.cells[x:x+len(obj), y:y+len(obj[0])] = obj

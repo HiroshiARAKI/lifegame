@@ -1,5 +1,7 @@
 from .frame import LGFrame
 import wx
+import numpy as np
+from glob import glob
 
 
 class GUILifeGame:
@@ -14,6 +16,9 @@ class GUILifeGame:
         """
         self.f_shape = f_shape
         self.dt = time_step
+        self.app = wx.App()
+        self.frame = LGFrame(f_shape=self.f_shape,
+                             time_step=self.dt)
 
     def run(self, init_rand: bool = False, rate: float = 0.2) -> None:
         """
@@ -22,13 +27,34 @@ class GUILifeGame:
         :param rate:
         :return:
         """
-        app = wx.App()
-        frame = LGFrame(f_shape=self.f_shape,
-                        time_step=self.dt)
 
         if init_rand:
-            frame.init_rand(None, rate)
+            self.frame.init_rand(None, rate)
 
-        frame.Show()
-        app.MainLoop()
+        self.frame.Show()
+        self.app.MainLoop()
+
+    def set_object(self, obj: str = 'glider', center: bool = True, x: int = 0, y: int = 0):
+        """
+        Set an object to the Game Field
+        :param obj:
+        :param center:
+        :param x:
+        :param y:
+        :return:
+        """
+        objects = glob('objects/*.txt')
+        objects = [o[8:-4] for o in objects]  # Is this stubborn coding?
+
+        if obj not in objects:
+            raise Exception('The object "{}" is not supported now.'.format(obj))
+
+        obj = np.loadtxt('objects/{}.txt'.format(obj), delimiter=',').T
+        if center:
+            x = int(self.f_shape[0] / 2 - len(obj) / 2)
+            y = int(self.f_shape[1] / 2 - len(obj[0]) / 2)
+
+        self.frame.set_object(obj, x, y)
+
+
 

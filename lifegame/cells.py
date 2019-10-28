@@ -12,15 +12,6 @@ class Cells(object):
     def get_cells(self):
         return self.cells
 
-    def is_alive(self, x, y):
-        """
-        The cell is alive?
-        :param x:
-        :param y:
-        :return:
-        """
-        return True if self.cells[x][y] != 0 else False
-
     def count_alive_cells(self, x, y):
         """
         Count alive cells surrounding a cell.
@@ -30,16 +21,16 @@ class Cells(object):
         """
 
         # indices of surrounding cells.
-        ul = y - 1 if (y-1) >= 0 else 0  # upper left
-        ur = y + 2 if (y+2) <= (self.f_shape[1]) else self.f_shape[1]  # upper right
-        bl = x - 1 if (x-1) >= 0 else 0  # bottom left
-        br = x + 2 if (x+2) <= (self.f_shape[0]) else self.f_shape[0]  # bottom right
+        ul = max(y - 1, 0)  # upper left
+        ur = min(y + 2, self.f_shape[1])  # upper right
+        bl = max(x - 1, 0)  # bottom left
+        br = min(x + 2, self.f_shape[0])  # bottom right
 
         # slice
         cells = self.cells[bl:br, ul:ur]
         n_cells = np.count_nonzero(cells)
 
-        return n_cells if not self.is_alive(x, y) else n_cells - 1
+        return n_cells - self.cells[x][y]
 
     def make_cell_change(self, x, y):
         """
