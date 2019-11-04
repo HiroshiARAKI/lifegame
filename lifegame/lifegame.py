@@ -12,7 +12,7 @@ class LifeGame(Cells):
     The LifeGame: Main class
     """
     def __init__(self, f_shape: tuple = (100, 100), time_step: int = 1000) -> None:
-        if (f_shape[0] * f_shape[1]) > (100 * 100):
+        if (f_shape[0] * f_shape[1]) > (200 * 200):
             raise Exception('Please set Cells to fewer than (100, 100)')
 
         super().__init__(f_shape)

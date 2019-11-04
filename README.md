@@ -1,6 +1,6 @@
 # LifeGame on Python
 
-![version](https://img.shields.io/badge/version-0.2.0-lightgray.svg?style=flat) 
+![version](https://img.shields.io/badge/version-0.2.1-lightgray.svg?style=flat) 
    
 You can simulate Conway's Game of Life simply on Python!!  
 
@@ -11,11 +11,20 @@ My article: [GUIのライフゲームを作ってみた【Python】| HIRO LAB BL
 (en) [Conway's Game of Life - Wikipedia](https://en.wikipedia.org/wiki/Conway%27s_Game_of_Life)  
 (jp) [ライフゲーム - Wikipedia](https://ja.wikipedia.org/wiki/ライフゲーム)  
 
+## Install
+```bash
+$ python setup.py install
+```
+
+## Simple TesCase
+```bash
+$ python setup.py test
+```
 
 ## Examples
 The code of [main.py](main.py)
 ```python
-from lifegame import GUILifeGame
+from lifegame import GUILifeGame, obj
 
 
 if __name__ == '__main__':
@@ -24,7 +33,7 @@ if __name__ == '__main__':
     game = GUILifeGame(f_shape=(50, 50), time_step=100)
 
     # Put Galaxy on center
-    game.set_object('galaxy')
+    game.set_object(obj.GALAXY)
 
     # Start!!
     game.run()

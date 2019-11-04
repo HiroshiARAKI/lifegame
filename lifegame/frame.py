@@ -23,6 +23,7 @@ class LGFrame(wx.Frame):
         self.y_max = 25 + float(f_shape[1]) * self.cell_size
         self.f_shape = f_shape
         self.dt = time_step
+        self.grid = True
 
         wx.Frame.__init__(self, None, -1,
                           title='LifeGame', size=(w_size, self.y_max*1.1))
@@ -90,9 +91,13 @@ class LGFrame(wx.Frame):
             for j, y in enumerate(np.arange(25, self.y_max, s)):
                 color = 'white' if self.game.cells[i][j] == 0 else 'black'
 
-                dc.SetBrush(wx.Brush(color))
-
-                dc.DrawRectangle(x, y, s, s)
+                if self.grid:
+                    dc.SetBrush(wx.Brush(color))
+                    dc.DrawRectangle(x, y, s, s)
+                else:
+                    if self.game.cells[i][j] == 1:
+                        dc.SetBrush(wx.Brush(color))
+                        dc.DrawRectangle(x, y, s, s)
 
     def run(self, event):
         self.btn1.Disable()
@@ -101,6 +106,8 @@ class LGFrame(wx.Frame):
         self.btn4.Disable()
         self.btn5.Disable()
         self.btn6.Disable()
+
+        self.grid = False
 
         self.timer.Start(self.dt)
         self.game.update()
@@ -117,6 +124,8 @@ class LGFrame(wx.Frame):
         self.btn5.Enable()
         self.btn6.Enable()
 
+        self.grid = True
+
         self.game.update()
         self.gen += 1
         self.SetStatusText('Size = (%d, %d): Generation = %d,   Alive cells = %d'
@@ -131,7 +140,10 @@ class LGFrame(wx.Frame):
         self.btn5.Enable()
         self.btn6.Enable()
 
+        self.grid = True
+
         self.timer.Stop()
+        self.Refresh()
 
     def clear(self, event):
         self.btn1.Enable()
@@ -140,6 +152,8 @@ class LGFrame(wx.Frame):
         self.btn4.Enable()
         self.btn5.Enable()
         self.btn6.Enable()
+
+        self.grid = True
 
         self.game.clear()
         self.gen = 0
@@ -154,6 +168,8 @@ class LGFrame(wx.Frame):
         self.btn4.Enable()
         self.btn5.Enable()
 
+        self.grid = True
+
         self.game.init_rand(rate)
         self.gen = 0
         self.SetStatusText('Size = (%d, %d): Generation = %d,   Alive cells = %d'
@@ -167,6 +183,8 @@ class LGFrame(wx.Frame):
         self.btn4.Enable()
         self.btn5.Enable()
         self.btn6.Enable()
+
+        self.grid = True
 
         os.makedirs('save/', exist_ok=True)
         file_name = 'save/data_%s.txt' % (datetime.now().strftime('%Y%m%d_%H-%M%-S'))

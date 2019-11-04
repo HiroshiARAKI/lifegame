@@ -1,4 +1,4 @@
-from lifegame import GUILifeGame
+from lifegame import GUILifeGame, obj
 
 
 if __name__ == '__main__':
@@ -7,9 +7,7 @@ if __name__ == '__main__':
     game = GUILifeGame(f_shape=(50, 50), time_step=100)
 
     # Put Galaxy on center
-    game.set_object('galaxy')
+    game.set_object(obj.GALAXY)
 
     # Start!!
     game.run()
-
-

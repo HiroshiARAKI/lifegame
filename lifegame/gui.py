@@ -2,6 +2,7 @@ from .frame import LGFrame
 import wx
 import numpy as np
 from glob import glob
+import os
 
 
 class GUILifeGame:
@@ -43,13 +44,15 @@ class GUILifeGame:
         :param y:
         :return:
         """
-        objects = glob('objects/*.txt')
-        objects = [o[8:-4] for o in objects]  # Is this stubborn coding?
+        obj_path = os.getcwd()+'/lifegame/objects/'
+        objects = glob(obj_path + '*.txt')
+        objects = [os.path.basename(o)[:-4] for o in objects]
+        print(objects)
 
         if obj not in objects:
             raise Exception('The object "{}" is not supported now.'.format(obj))
 
-        obj = np.loadtxt('objects/{}.txt'.format(obj), delimiter=',').T
+        obj = np.loadtxt(obj_path + '{}.txt'.format(obj), delimiter=',').T
         if center:
             x = int(self.f_shape[0] / 2 - len(obj) / 2)
             y = int(self.f_shape[1] / 2 - len(obj[0]) / 2)
