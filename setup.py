@@ -20,6 +20,6 @@ setup(
     install_requires=read_requirements(),
     url='https://github.com/HiroshiARAKI/lifegame',
     license='MIT',
-    packages=find_packages(exclude=('examples', 'save')),
+    packages=find_packages(exclude=('examples', 'save', 'tests')),
     test_suite='tests',
 )
