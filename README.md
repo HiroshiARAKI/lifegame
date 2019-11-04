@@ -16,7 +16,7 @@ My article: [GUIのライフゲームを作ってみた【Python】| HIRO LAB BL
 $ python setup.py install
 ```
 
-## Simple TesCase
+## Simple TestCase
 ```bash
 $ python setup.py test
 ```
