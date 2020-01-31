@@ -12,8 +12,8 @@ class LifeGame(Cells):
     The LifeGame: Main class
     """
     def __init__(self, f_shape: tuple = (100, 100), time_step: int = 1000) -> None:
-        if (f_shape[0] * f_shape[1]) > (200 * 200):
-            raise Exception('Please set Cells to fewer than (100, 100)')
+        if (f_shape[0] * f_shape[1]) > (300 * 300):
+            raise Exception('Please set Cells to fewer than (300, 300)')
 
         super().__init__(f_shape)
         self.w_h = int(150 / f_shape[0])
@@ -25,31 +25,36 @@ class LifeGame(Cells):
         Update next generation
         :return:
         """
-        next_states = np.zeros(shape=self.cells.shape, dtype=int)
+        alive_cells = [
+            [self.count_alive_cells(x, y) for y in range(len(line))]
+            for x, line in enumerate(self.cells)
+        ]
 
-        for y, line in enumerate(self.cells):
-            for x, cell in enumerate(line):
-                next_states[x][y] = self.get_next_state(self.count_alive_cells(x, y),
-                                                        self.cells[x][y]
-                                                        )
-        self.step_next_generation(next_states)
+        next_states = [
+            [self.get_next_state(a, cell)
+             for a, cell in zip(als, line)]
+            for als, line in zip(alive_cells, self.cells)
+        ]
 
-    def step_next_generation(self, next_states) -> None:
+        # step next generation
+        self.cells = np.array([
+            [self.get_next_generation(s) for s in ns]
+            for ns in next_states
+        ])
+
+    @staticmethod
+    def get_next_generation(state) -> int:
         """
-        Change all cells' states by the Life Rule
-        :param next_states:
+        Get next generation status
+        :param state:
         :return:
         """
-        for y, line in enumerate(self.cells):
-            for x, cell in enumerate(line):
-                if next_states[x][y] == BORN:
-                    self.cells[x][y] = 1
-
-                elif next_states[x][y] == DIE_DENSE or next_states[x][y] == DIE_SPARSE:
-                    self.cells[x][y] = 0
-
-                else:
-                    self.cells[x][y] = 1
+        if state == BORN:
+            return 1
+        elif state == DIE_DENSE or state == DIE_SPARSE:
+            return 0
+        else:
+            return 1
 
     @staticmethod
     def get_next_state(n_cells, my_state) -> int:
@@ -77,9 +82,11 @@ class LifeGame(Cells):
         if rate < 0 or rate > 1:
             raise Exception('Please set the range of rate to 0 < rate < 1 ')
 
-        for x, line in enumerate(self.cells):
-            for y, cell in enumerate(line):
-                self.cells[x][y] = 1 if np.random.rand() <= rate else 0
+        self.cells = np.array([
+            [1 if np.random.rand() <= rate else 0 for _ in c]
+            for c in self.cells
+            ]
+        )
 
     def clear(self) -> None:
         """

@@ -12,7 +12,7 @@ def read_requirements():
 
 setup(
     name='LifeGame',
-    version='0.2.1',
+    version='0.3.0',
     description='Simple Conway\'s Game of Life Simulator on Python',
     long_description='README.md',
     author='Hiroshi ARAKI',
